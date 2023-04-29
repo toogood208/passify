@@ -1,11 +1,16 @@
 import 'dart:collection';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:passify/core/models/category/category.dart';
 import 'package:passify/core/models/password/password.dart';
 import 'package:passify/core/services/password_service.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final p = PasswordService();
+  final log = Logger();
+  String generatedPassword = "";
+  bool checkBoxValue = false;
 
   final List<Password> _password = [];
   List<Categories> _category = [];
@@ -77,5 +82,24 @@ class HomeViewModel extends ChangeNotifier {
         oldPassword.obscure != updatedPaswword.obscure) {
       notifyListeners();
     }
+  }
+
+  void generatePassword() {
+    checkBoxValue = !checkBoxValue;
+    String lowercase = "abcdefghijkmnopqwxyz";
+    String uppercase = "ABCDEFGHIJKLMNOPQWxYZ";
+    String number = "0123456789";
+    String symbols = "!@#\$%^&*?";
+
+    String strongPassword = "$lowercase$uppercase$number$symbols";
+    String password = List.generate(10, (index) {
+      int randomIndex = Random.secure().nextInt(strongPassword.length);
+      return strongPassword[randomIndex];
+    }).join("");
+
+    generatedPassword = password;
+
+    log.v(generatedPassword);
+    notifyListeners();
   }
 }

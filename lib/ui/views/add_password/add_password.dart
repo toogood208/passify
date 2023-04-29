@@ -155,7 +155,7 @@ class _AddNewPasswordState extends ConsumerState<AddNewPassword> {
                 height: 30.h,
               ),
               TextFormField(
-                 validator: (value) {
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Field cannot be empty';
                   }
@@ -193,7 +193,8 @@ class _AddNewPasswordState extends ConsumerState<AddNewPassword> {
                 height: 30.h,
               ),
               TextFormField(
-                 validator: (value) {
+                controller: pinController,
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Field cannot be empty';
                   }
@@ -204,7 +205,6 @@ class _AddNewPasswordState extends ConsumerState<AddNewPassword> {
                   fontWeight: FontWeight.w500,
                   color: const Color.fromRGBO(26, 29, 30, 1),
                 ),
-                controller: pinController,
                 focusNode: pinFocus,
                 decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -227,23 +227,35 @@ class _AddNewPasswordState extends ConsumerState<AddNewPassword> {
                             ? const Color.fromRGBO(76, 166, 168, 1)
                             : Colors.black)),
               ),
+              CheckboxListTile(
+                activeColor:const Color.fromRGBO(76, 166, 168, 1) ,
+                title: const Text("Generate Password"),
+                  value: models.checkBoxValue,
+                  onChanged: (bool? val) {
+                    models.generatePassword();
+                    if (models.checkBoxValue == true) {
+                      pinController.text = models.generatedPassword;
+                    }
+                  }),
               SizedBox(
                 height: 50.h,
               ),
               InkWell(
                 onTap: () {
                   final model = ref.read(passwordProvider);
-                  if(_formKey.currentState!.validate()){
-                      model.addPassword(Password()
-                    ..pin = pinController.text
-                    ..name = nameController.text
-                    ..email = emailController.text
-                    ..createdTime = DateTime.now()
-                    ..obscure = true
-                    ..category.value = models.dropdownValue);
+          
+                  if (_formKey.currentState!.validate()) {
+                    models.generatedPassword;
+                    model.addPassword(Password()
+                      ..pin = pinController.text
+                      ..name = nameController.text
+                      ..email = emailController.text
+                      ..createdTime = DateTime.now()
+                      ..obscure = true
+                      ..category.value = models.dropdownValue);
+                    //Navigator.pop(context);
 
                   }
-                
                 },
                 child: Ink(
                   width: 335.w,
