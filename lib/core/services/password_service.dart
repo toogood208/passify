@@ -42,6 +42,12 @@ class PasswordService {
     return await isar.passwords.where().findAll();
   }
 
+  Future<List<Categories>> getAllCategories() async {
+    logger.v("getting all categories");
+    final isar = await db;
+    return await isar.categories.where().findAll();
+  }
+
   Future<Isar> openDB() async {
     logger.v("initializing db");
     final dir = await getApplicationDocumentsDirectory();

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:passify/core/models/category/category.dart';
 import 'package:passify/ui/views/home_view/home_view_model.dart';
 
 final passwordProvider = ChangeNotifierProvider((_) => HomeViewModel());
