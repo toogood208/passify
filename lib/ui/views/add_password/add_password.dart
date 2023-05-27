@@ -3,13 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:passify/core/models/category/category.dart';
 import 'package:passify/core/models/password/password.dart';
-import 'package:passify/ui/views/category/category.dart';
-import 'package:passify/ui/views/home_view/home_view_model.dart';
+import 'package:passify/ui/views/add_password/add_password_view_model.dart';
 import 'package:stacked/stacked.dart';
 
-
-class AddNewPassword extends StatelessWidget{
-   AddNewPassword({super.key, this.password});
+class AddNewPassword extends StatelessWidget {
+  AddNewPassword({super.key, this.password});
   final Password? password;
 
   final nameController = TextEditingController();
@@ -17,26 +15,19 @@ class AddNewPassword extends StatelessWidget{
   final emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
-
-
-    return ViewModelBuilder<HomeViewModel>.reactive(
-        viewModelBuilder: ()=> HomeViewModel(),
-        onViewModelReady: (model){
-          if(password != null){
+    return ViewModelBuilder<AddPasswordViewModel>.reactive(
+        viewModelBuilder: () => AddPasswordViewModel(),
+        onViewModelReady: (model) {
+          if (password != null) {
             nameController.text = password!.name;
             emailController.text = password!.email;
             pinController.text = password!.pin;
-
           }
         },
-        builder: (context, model,child){
-          return  Scaffold(
+        builder: (context, model, child) {
+          return Scaffold(
             backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
             appBar: AppBar(
               elevation: 0,
@@ -50,20 +41,6 @@ class AddNewPassword extends StatelessWidget{
                   color: const Color.fromRGBO(26, 29, 30, 1),
                 ),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CategoryView()));
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    color: Color.fromRGBO(26, 29, 30, 1),
-                  ),
-                ),
-              ],
             ),
             body: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -79,28 +56,35 @@ class AddNewPassword extends StatelessWidget{
                         SizedBox(width: 10.w),
                         model.categories.isEmpty
                             ? IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                     CategoryView()));
-                          },
-                          icon: const Icon(
-                            Icons.add,
-                            color: Color.fromRGBO(26, 29, 30, 1),
-                          ),
-                        )
-                            : DropdownButton<Categories>(
-                            value: model.dropdownValue,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            items: model.categories
-                                .map<DropdownMenuItem<Categories>>(
-                                    (Categories e) {
-                                  return DropdownMenuItem<Categories>(
-                                      value: e, child: Text(e.name));
-                                }).toList(),
-                            onChanged: model.changeCategory),
+                                onPressed:model.navigateToCategoryView,
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Color.fromRGBO(26, 29, 30, 1),
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  DropdownButton<Categories>(
+                                      value: model.dropdownValue,
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                      items: model.categories
+                                          .map<DropdownMenuItem<Categories>>(
+                                              (Categories e) {
+                                        return DropdownMenuItem<Categories>(
+                                            value: e, child: Text(e.name));
+                                      }).toList(),
+                                      onChanged: model.changeCategory),
+                                  IconButton(
+                                    onPressed: model.navigateToCategoryView,
+                                    icon: const Icon(
+                                      Icons.add,
+                                      color: Color.fromRGBO(26, 29, 30, 1),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ],
                     ),
                     SizedBox(
@@ -113,7 +97,7 @@ class AddNewPassword extends StatelessWidget{
                         }
                         return null;
                       },
-                      onTap: ()=> model.requestNameFocus(context),
+                      onTap: () => model.requestNameFocus(context),
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w500,
                         color: const Color.fromRGBO(26, 29, 30, 1),
@@ -123,11 +107,12 @@ class AddNewPassword extends StatelessWidget{
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                                color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
+                                color: Color.fromRGBO(76, 166, 168, 1),
+                                width: 2.0),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          contentPadding:
-                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.h, horizontal: 10.w),
                           filled: true,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(9.r)),
@@ -150,7 +135,7 @@ class AddNewPassword extends StatelessWidget{
                         }
                         return null;
                       },
-                      onTap: ()=> model.requestEmailFocus(context),
+                      onTap: () => model.requestEmailFocus(context),
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w500,
                         color: const Color.fromRGBO(26, 29, 30, 1),
@@ -160,11 +145,12 @@ class AddNewPassword extends StatelessWidget{
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                                color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
+                                color: Color.fromRGBO(76, 166, 168, 1),
+                                width: 2.0),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          contentPadding:
-                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.h, horizontal: 10.w),
                           filled: true,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(9.r)),
@@ -189,7 +175,7 @@ class AddNewPassword extends StatelessWidget{
                         }
                         return null;
                       },
-                      onTap: ()=> model.requestPinFocus(context),
+                      onTap: () => model.requestPinFocus(context),
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w500,
                         color: const Color.fromRGBO(26, 29, 30, 1),
@@ -198,11 +184,12 @@ class AddNewPassword extends StatelessWidget{
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
-                                color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
+                                color: Color.fromRGBO(76, 166, 168, 1),
+                                width: 2.0),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          contentPadding:
-                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 10.h, horizontal: 10.w),
                           filled: true,
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(9.r)),
@@ -231,24 +218,24 @@ class AddNewPassword extends StatelessWidget{
                     ),
                     InkWell(
                       onTap: () {
-
                         if (_formKey.currentState!.validate()) {
                           model.generatedPassword;
-                         password != null
+                          password != null
                               ? model.update(
-                              id: password!.id,
-                              name: password!.name,
-                              email: password!.email,
-                              pin: password!.pin,
-                              obscure: password!.obscure,
-                              category: password!.category.value ?? model.dropdownValue)
+                                  id: password!.id,
+                                  name: password!.name,
+                                  email: password!.email,
+                                  pin: password!.pin,
+                                  obscure: password!.obscure,
+                                  category: password!.category.value ??
+                                      model.dropdownValue)
                               : model.addPassword(Password()
-                            ..pin = pinController.text
-                            ..name = nameController.text
-                            ..email = emailController.text
-                            ..createdTime = DateTime.now()
-                            ..obscure = true
-                            ..category.value = model.dropdownValue);
+                                ..pin = pinController.text
+                                ..name = nameController.text
+                                ..email = emailController.text
+                                ..createdTime = DateTime.now()
+                                ..obscure = true
+                                ..category.value = model.dropdownValue);
                         }
                       },
                       child: Ink(
@@ -259,7 +246,7 @@ class AddNewPassword extends StatelessWidget{
                             borderRadius: BorderRadius.circular(12.r)),
                         child: Center(
                           child: Text(
-                           password != null ? "Update" : "Save",
+                            password != null ? "Update" : "Save",
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w600,
                               fontSize: 16.sp,
@@ -275,6 +262,5 @@ class AddNewPassword extends StatelessWidget{
             ),
           );
         });
-
   }
 }

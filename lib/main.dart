@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:passify/ui/views/home_view/home.dart';
+import 'package:passify/app/app.locator.dart';
+import 'package:passify/app/app.router.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await setupLocator();
   runApp(
 
     const MyApp(),
@@ -28,7 +31,9 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
               primarySwatch: Colors.blue,
             ),
-            home: const HomePage(),
+            initialRoute: Routes.homePage,
+            onGenerateRoute: StackedRouter().onGenerateRoute,
+            navigatorKey: StackedService.navigatorKey,
           );
         }
       );

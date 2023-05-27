@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:passify/core/models/password/password.dart';
-import 'package:passify/ui/views/add_password/add_password.dart';
 import 'package:passify/ui/views/home_view/home_view_model.dart';
 import 'package:stacked/stacked.dart';
 
@@ -130,13 +129,8 @@ class HomePage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final password = model.passwords[index];
                         return GestureDetector(
-                          onTap: () async {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                                  return AddNewPassword(
-                                    password: password,
-                                  );
-                                }));
+                          onTap: ()  {
+                            model.navigateToAddPassword(password: password);
                           },
                           child: Container(
                             width: 327.w,
@@ -230,10 +224,7 @@ class HomePage extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
-                final password = await createOrUpdatePasswordDialog(context: context);
-                if (password != null) {
-                  model.addPassword(password);
-                }
+               model.navigateToAddPassword();
               },
               child: const Icon(Icons.add),
             ),

@@ -43,13 +43,20 @@ class PasswordService {
 
   Future<Password?> getOnePassword(int id) async {
     final isar = await db;
-    return await  isar.passwords.get(id);
+    return await isar.passwords.get(id);
   }
 
   Future<List<Categories>> getAllCategories() async {
     logger.v("getting all categories");
     final isar = await db;
     return await isar.categories.where().findAll();
+  }
+
+  Future<bool> deleteCategory(int id) async {
+    final isar = await db;
+   final response = isar.writeTxn(() =>  isar.categories.delete(id));
+
+    return response;
   }
 
   Future<Isar> openDB() async {
