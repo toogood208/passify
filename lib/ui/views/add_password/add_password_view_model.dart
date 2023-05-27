@@ -24,7 +24,6 @@ class AddPasswordViewModel extends BaseViewModel {
   late FocusNode pinFocus = FocusNode();
 
   List<Categories> _category = [];
-  final List<Password> _password = [];
 
   final logger = getLogger("AddPasswordViewModel");
   Categories? dropdownValue;
@@ -35,8 +34,6 @@ class AddPasswordViewModel extends BaseViewModel {
   UnmodifiableListView<Categories> get categories =>
       UnmodifiableListView(_category);
 
-  UnmodifiableListView<Password> get passwords =>
-      UnmodifiableListView(_password);
 
   void changeCategory(Categories? newValue) {
     dropdownValue = null;
@@ -79,9 +76,9 @@ class AddPasswordViewModel extends BaseViewModel {
   }
 
   void addPassword(Password password) async {
-    await _passwordService.savePassword(password);
-    _password.add(password);
+   await _passwordService.savePassword(password);
     notifyListeners();
+    navigatoHomeView();
   }
 
   void update({
@@ -110,6 +107,8 @@ class AddPasswordViewModel extends BaseViewModel {
 
   void navigateToCategoryView(){
     _navigationService.navigateTo(Routes.categoryView);
-
+  }
+  void navigatoHomeView(){
+    _navigationService.clearStackAndShow(Routes.homePage);
   }
 }
