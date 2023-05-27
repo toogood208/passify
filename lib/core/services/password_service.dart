@@ -17,12 +17,11 @@ class PasswordService {
     isar.writeTxnSync<int>(() => isar.passwords.putSync(password));
   }
 
-   Future<void> saveCategory(Categories categories) async {
+  Future<void> saveCategory(Categories categories) async {
     logger.v("adding $categories to $db");
     final isar = await db;
     isar.writeTxnSync<int>(() => isar.categories.putSync(categories));
   }
-
 
   Stream<List<Password>> listenToPasswords() async* {
     logger.v("listening to all passwords");
@@ -40,6 +39,11 @@ class PasswordService {
     logger.v("getting all passwords");
     final isar = await db;
     return await isar.passwords.where().findAll();
+  }
+
+  Future<Password?> getOnePassword(int id) async {
+    final isar = await db;
+    return await  isar.passwords.get(id);
   }
 
   Future<List<Categories>> getAllCategories() async {

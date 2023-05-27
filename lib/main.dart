@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:passify/ui/views/add_password/add_password.dart';
+import 'package:passify/ui/views/home_view/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
+
+    const MyApp(),
+
   );
 }
 
@@ -26,9 +25,10 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Flutter Demo',
             theme: ThemeData(
+              useMaterial3: true,
               primarySwatch: Colors.blue,
             ),
-            home: const AddNewPassword(),
+            home: const HomePage(),
           );
         }
       );

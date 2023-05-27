@@ -1,284 +1,280 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:passify/core/models/category/category.dart';
 import 'package:passify/core/models/password/password.dart';
 import 'package:passify/ui/views/category/category.dart';
 import 'package:passify/ui/views/home_view/home_view_model.dart';
+import 'package:stacked/stacked.dart';
 
-final passwordProvider = ChangeNotifierProvider((_) => HomeViewModel());
 
-class AddNewPassword extends ConsumerStatefulWidget {
-  const AddNewPassword({super.key});
+class AddNewPassword extends StatelessWidget{
+   AddNewPassword({super.key, this.password});
+  final Password? password;
 
-  @override
-  ConsumerState<AddNewPassword> createState() => _AddNewPasswordState();
-}
-
-class _AddNewPasswordState extends ConsumerState<AddNewPassword> {
   final nameController = TextEditingController();
   final pinController = TextEditingController();
   final emailController = TextEditingController();
-  late FocusNode nameFocuse = FocusNode();
-  late FocusNode emailFocuse = FocusNode();
-  late FocusNode pinFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
 
-  void requestNameFocus() {
-    setState(() {
-      FocusScope.of(context).requestFocus(nameFocuse);
-    });
-  }
 
-  void requestEmailFocus() {
-    setState(() {
-      FocusScope.of(context).requestFocus(emailFocuse);
-    });
-  }
 
-  void requestPinFocus() {
-    setState(() {
-      FocusScope.of(context).requestFocus(pinFocus);
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    final models = ref.watch(passwordProvider);
 
-    return Scaffold(
-      backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
-        centerTitle: true,
-        title: Text(
-          "Add Account",
-          style: GoogleFonts.poppins(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w500,
-            color: const Color.fromRGBO(26, 29, 30, 1),
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CategoryView()));
-            },
-            icon: const Icon(
-              Icons.add,
-              color: Color.fromRGBO(26, 29, 30, 1),
+
+    return ViewModelBuilder<HomeViewModel>.reactive(
+        viewModelBuilder: ()=> HomeViewModel(),
+        onViewModelReady: (model){
+          if(password != null){
+            nameController.text = password!.name;
+            emailController.text = password!.email;
+            pinController.text = password!.pin;
+
+          }
+        },
+        builder: (context, model,child){
+          return  Scaffold(
+            backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: const Color.fromRGBO(251, 251, 251, 1),
+              centerTitle: true,
+              title: Text(
+                "Add Account",
+                style: GoogleFonts.poppins(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w500,
+                  color: const Color.fromRGBO(26, 29, 30, 1),
+                ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CategoryView()));
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    color: Color.fromRGBO(26, 29, 30, 1),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text("Categories"),
-                  SizedBox(width: 10.w),
-                  models.categories.isEmpty
-                      ? IconButton(
+            body: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text("Categories"),
+                        SizedBox(width: 10.w),
+                        model.categories.isEmpty
+                            ? IconButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const CategoryView()));
+                                     CategoryView()));
                           },
                           icon: const Icon(
                             Icons.add,
                             color: Color.fromRGBO(26, 29, 30, 1),
                           ),
                         )
-                      : DropdownButton<Categories>(
-                          value: models.dropdownValue,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          items: models.categories
-                              .map<DropdownMenuItem<Categories>>(
-                                  (Categories e) {
-                            return DropdownMenuItem<Categories>(
-                                value: e, child: Text(e.name));
-                          }).toList(),
-                          onChanged: models.changeCategory),
-                ],
-              ),
-              SizedBox(
-                width: 50.w,
-              ),
-              TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Field cannot be empty';
-                  }
-                  return null;
-                },
-                onTap: requestNameFocus,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  color: const Color.fromRGBO(26, 29, 30, 1),
-                ),
-                controller: nameController,
-                focusNode: nameFocuse,
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
-                      borderRadius: BorderRadius.circular(8.0),
+                            : DropdownButton<Categories>(
+                            value: model.dropdownValue,
+                            icon: const Icon(Icons.arrow_drop_down),
+                            items: model.categories
+                                .map<DropdownMenuItem<Categories>>(
+                                    (Categories e) {
+                                  return DropdownMenuItem<Categories>(
+                                      value: e, child: Text(e.name));
+                                }).toList(),
+                            onChanged: model.changeCategory),
+                      ],
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                    filled: true,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9.r)),
-                    fillColor: Colors.white,
-                    labelText: "Account Name",
-                    labelStyle: GoogleFonts.lato(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: nameFocuse.hasFocus
-                            ? const Color.fromRGBO(76, 166, 168, 1)
-                            : Colors.black)),
-              ),
-              SizedBox(
-                height: 30.h,
-              ),
-              TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Field cannot be empty';
-                  }
-                  return null;
-                },
-                onTap: requestEmailFocus,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  color: const Color.fromRGBO(26, 29, 30, 1),
-                ),
-                focusNode: emailFocuse,
-                controller: emailController,
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
-                      borderRadius: BorderRadius.circular(8.0),
+                    SizedBox(
+                      width: 50.w,
                     ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                    filled: true,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9.r)),
-                    hintText: "we@gmail.com",
-                    fillColor: Colors.white,
-                    labelText: "Account Email",
-                    labelStyle: GoogleFonts.lato(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: emailFocuse.hasFocus
-                            ? const Color.fromRGBO(76, 166, 168, 1)
-                            : Colors.black)),
-              ),
-              SizedBox(
-                height: 30.h,
-              ),
-              TextFormField(
-                controller: pinController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Field cannot be empty';
-                  }
-                  return null;
-                },
-                onTap: requestPinFocus,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  color: const Color.fromRGBO(26, 29, 30, 1),
-                ),
-                focusNode: pinFocus,
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                    filled: true,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(9.r)),
-                    hintText: "*********",
-                    fillColor: Colors.white,
-                    labelText: "Account Password",
-                    labelStyle: GoogleFonts.lato(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                        color: pinFocus.hasFocus
-                            ? const Color.fromRGBO(76, 166, 168, 1)
-                            : Colors.black)),
-              ),
-              CheckboxListTile(
-                activeColor:const Color.fromRGBO(76, 166, 168, 1) ,
-                title: const Text("Generate Password"),
-                  value: models.checkBoxValue,
-                  onChanged: (bool? val) {
-                    models.generatePassword();
-                    if (models.checkBoxValue == true) {
-                      pinController.text = models.generatedPassword;
-                    }
-                  }),
-              SizedBox(
-                height: 50.h,
-              ),
-              InkWell(
-                onTap: () {
-                  final model = ref.read(passwordProvider);
-          
-                  if (_formKey.currentState!.validate()) {
-                    models.generatedPassword;
-                    model.addPassword(Password()
-                      ..pin = pinController.text
-                      ..name = nameController.text
-                      ..email = emailController.text
-                      ..createdTime = DateTime.now()
-                      ..obscure = true
-                      ..category.value = models.dropdownValue);
-                    //Navigator.pop(context);
-
-                  }
-                },
-                child: Ink(
-                  width: 335.w,
-                  height: 54.h,
-                  decoration: BoxDecoration(
-                      color: const Color.fromRGBO(76, 166, 168, 1),
-                      borderRadius: BorderRadius.circular(12.r)),
-                  child: Center(
-                    child: Text(
-                      "Save",
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Field cannot be empty';
+                        }
+                        return null;
+                      },
+                      onTap: ()=> model.requestNameFocus(context),
                       style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.sp,
-                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(26, 29, 30, 1),
+                      ),
+                      controller: nameController,
+                      focusNode: model.nameFocus,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding:
+                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9.r)),
+                          fillColor: Colors.white,
+                          labelText: "Account Name",
+                          labelStyle: GoogleFonts.lato(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: model.nameFocus.hasFocus
+                                  ? const Color.fromRGBO(76, 166, 168, 1)
+                                  : Colors.black)),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Field cannot be empty';
+                        }
+                        return null;
+                      },
+                      onTap: ()=> model.requestEmailFocus(context),
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(26, 29, 30, 1),
+                      ),
+                      focusNode: model.emailFocus,
+                      controller: emailController,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding:
+                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9.r)),
+                          hintText: "we@gmail.com",
+                          fillColor: Colors.white,
+                          labelText: "Account Email",
+                          labelStyle: GoogleFonts.lato(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: model.emailFocus.hasFocus
+                                  ? const Color.fromRGBO(76, 166, 168, 1)
+                                  : Colors.black)),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                    TextFormField(
+                      controller: pinController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Field cannot be empty';
+                        }
+                        return null;
+                      },
+                      onTap: ()=> model.requestPinFocus(context),
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(26, 29, 30, 1),
+                      ),
+                      focusNode: model.pinFocus,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color.fromRGBO(76, 166, 168, 1), width: 2.0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding:
+                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(9.r)),
+                          hintText: "*********",
+                          fillColor: Colors.white,
+                          labelText: "Account Password",
+                          labelStyle: GoogleFonts.lato(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: model.pinFocus.hasFocus
+                                  ? const Color.fromRGBO(76, 166, 168, 1)
+                                  : Colors.black)),
+                    ),
+                    CheckboxListTile(
+                        activeColor: const Color.fromRGBO(76, 166, 168, 1),
+                        title: const Text("Generate Password"),
+                        value: model.checkBoxValue,
+                        onChanged: (bool? val) {
+                          model.generatePassword();
+                          if (model.checkBoxValue == true) {
+                            pinController.text = model.generatedPassword;
+                          }
+                        }),
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                    InkWell(
+                      onTap: () {
+
+                        if (_formKey.currentState!.validate()) {
+                          model.generatedPassword;
+                         password != null
+                              ? model.update(
+                              id: password!.id,
+                              name: password!.name,
+                              email: password!.email,
+                              pin: password!.pin,
+                              obscure: password!.obscure,
+                              category: password!.category.value ?? model.dropdownValue)
+                              : model.addPassword(Password()
+                            ..pin = pinController.text
+                            ..name = nameController.text
+                            ..email = emailController.text
+                            ..createdTime = DateTime.now()
+                            ..obscure = true
+                            ..category.value = model.dropdownValue);
+                        }
+                      },
+                      child: Ink(
+                        width: 335.w,
+                        height: 54.h,
+                        decoration: BoxDecoration(
+                            color: const Color.fromRGBO(76, 166, 168, 1),
+                            borderRadius: BorderRadius.circular(12.r)),
+                        child: Center(
+                          child: Text(
+                           password != null ? "Update" : "Save",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.sp,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        });
+
   }
 }

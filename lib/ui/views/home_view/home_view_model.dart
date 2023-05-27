@@ -5,14 +5,15 @@ import 'package:logger/logger.dart';
 import 'package:passify/core/models/category/category.dart';
 import 'package:passify/core/models/password/password.dart';
 import 'package:passify/core/services/password_service.dart';
+import 'package:stacked/stacked.dart';
 
-class HomeViewModel extends ChangeNotifier {
+class HomeViewModel extends BaseViewModel {
   final p = PasswordService();
   final log = Logger();
   String generatedPassword = "";
   bool checkBoxValue = false;
 
-  final List<Password> _password = [];
+  List<Password> _password = [];
   List<Categories> _category = [];
   HomeViewModel() {
     readPassword();
@@ -34,8 +35,11 @@ class HomeViewModel extends ChangeNotifier {
     p.saveCategory(categories);
   }
 
-  void togglePassword() {
-    isObscure = !isObscure;
+  void showPassword(Password password) {
+    final index = _password.indexOf(password);
+    final obscure = _password[index].obscure;
+
+    _password[index].obscure = !obscure;
     notifyListeners();
   }
 
@@ -63,7 +67,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> readPassword() async {
-    _password.clear();
+    _password = await p.getAllPasswords();
 
     notifyListeners();
   }
@@ -73,15 +77,22 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update(Password updatedPaswword) {
-    final index = _password.indexOf(updatedPaswword);
-    final oldPassword = _password[index];
-    if (oldPassword.name != updatedPaswword.name ||
-        oldPassword.email != updatedPaswword.email ||
-        oldPassword.pin != updatedPaswword.pin ||
-        oldPassword.obscure != updatedPaswword.obscure) {
-      notifyListeners();
-    }
+  void update(
+      {required int id,
+      required String name,
+      required String email,
+      required String pin,
+      required bool obscure,
+      required Categories? category,}) async {
+    final pass = await p.getOnePassword(id);
+    pass!
+      ..name = name
+      ..email = email
+      ..pin = pin
+      ..obscure = obscure
+      ..category.value = category
+      ..createdTime = DateTime.now();
+    addPassword(pass);
   }
 
   void generatePassword() {
@@ -101,5 +112,25 @@ class HomeViewModel extends ChangeNotifier {
 
     log.v(generatedPassword);
     notifyListeners();
+  }
+
+  late FocusNode nameFocus = FocusNode();
+  late FocusNode emailFocus = FocusNode();
+  late FocusNode pinFocus = FocusNode();
+
+  void requestNameFocus(context) {
+      FocusScope.of(context).requestFocus(nameFocus);
+      notifyListeners();
+
+  }
+
+  void requestEmailFocus(context) {
+    FocusScope.of(context).requestFocus(emailFocus);
+
+  }
+
+  void requestPinFocus(context) {
+    FocusScope.of(context).requestFocus(pinFocus);
+
   }
 }
