@@ -83,7 +83,7 @@ class CategoryView extends StatelessWidget {
                                     color:const Color(0xFF373A4D)
                                 ),),
                                 IconButton(onPressed: (){
-                                  model.deleteCategory(category.id);
+                                  model.deleteCategory(category);
                                 },
                                     icon: Icon( CupertinoIcons.delete,
                                     color: Colors.red,

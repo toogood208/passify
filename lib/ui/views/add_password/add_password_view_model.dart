@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,23 +6,22 @@ import 'package:passify/app/app.logger.dart';
 import 'package:passify/app/app.router.dart';
 import 'package:passify/core/models/category/category.dart';
 import 'package:passify/core/models/password/password.dart';
+import 'package:passify/core/services/category_service.dart';
 import 'package:passify/core/services/password_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class AddPasswordViewModel extends BaseViewModel {
+class AddPasswordViewModel extends ReactiveViewModel {
   final _passwordService = locator<PasswordService>();
   final _navigationService = locator<NavigationService>();
+  final _categoryService = locator<CategoryService>();
 
-  AddPasswordViewModel(){
-    getCategory();
-  }
 
   late FocusNode nameFocus = FocusNode();
   late FocusNode emailFocus = FocusNode();
   late FocusNode pinFocus = FocusNode();
 
-  List<Categories> _category = [];
+  List<Categories> get categories => _categoryService.categoryList;
 
   final logger = getLogger("AddPasswordViewModel");
   Categories? dropdownValue;
@@ -31,17 +29,12 @@ class AddPasswordViewModel extends BaseViewModel {
 
   String generatedPassword = "";
 
-  UnmodifiableListView<Categories> get categories =>
-      UnmodifiableListView(_category);
-
 
   void changeCategory(Categories? newValue) {
     dropdownValue = null;
     dropdownValue = newValue;
     notifyListeners();
   }
-
-
 
   void requestNameFocus(context) {
     FocusScope.of(context).requestFocus(nameFocus);
@@ -76,9 +69,9 @@ class AddPasswordViewModel extends BaseViewModel {
   }
 
   void addPassword(Password password) async {
-   await _passwordService.savePassword(password);
+    await _passwordService.savePassword(password);
     notifyListeners();
-    navigatoHomeView();
+    _navigationService.back(result: true);
   }
 
   void update({
@@ -100,15 +93,14 @@ class AddPasswordViewModel extends BaseViewModel {
     addPassword(pass);
   }
 
-  Future<void> getCategory() async {
-    _category = await _passwordService.getAllCategories();
-    notifyListeners();
-  }
-
-  void navigateToCategoryView(){
+  void navigateToCategoryView() {
     _navigationService.navigateTo(Routes.categoryView);
   }
-  void navigatoHomeView(){
+
+  void navigatoHomeView() {
     _navigationService.clearStackAndShow(Routes.homePage);
   }
+
+  @override
+  List<ListenableServiceMixin> get listenableServices => [_categoryService];
 }
