@@ -1,11 +1,20 @@
-import 'package:isar/isar.dart';
+import 'package:floor/floor.dart';
 
-part 'category.g.dart';
+@Entity(tableName: "category")
+class Category {
+  @PrimaryKey()
+  final String? id;
+  final String? name;
 
-@Collection()
-class Categories {
-  Id id = Isar.autoIncrement;
+  Category({this.id, this.name});
 
-  @Index(unique: true)
-  late String name;
+  Category copyWith({
+    String? id,
+    String? name,
+  }) {
+    return Category(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
 }

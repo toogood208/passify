@@ -105,7 +105,7 @@ class HomePage extends StatelessWidget {
                                                 BorderRadius.circular(8.r)),
                                         child: Center(
                                           child: Text(
-                                            category,
+                                            category!,
                                             style: GoogleFonts.poppins(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14.sp,
@@ -207,7 +207,7 @@ class HomePage extends StatelessWidget {
       ),
       duration: const Duration(milliseconds: 500),
     );
-    model.deletePassword(password.id);
+    model.deletePassword(password);
   }
   void addPasswordToList() => _listKey.currentState?.insertItem(0);
 }

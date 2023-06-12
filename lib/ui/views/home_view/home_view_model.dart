@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:passify/app/app.locator.dart';
@@ -18,54 +17,31 @@ class HomeViewModel extends ReactiveViewModel {
   final log = Logger();
   bool searching = false;
 
-  List<Password> _password = [];
-  HomeViewModel() {
-    readPassword();
-  }
-
-  List<Categories> get categories => _categoryService.categoryList;
+  List<Category> get categories => _categoryService.categoryList;
+  List<Password> get passwords => _passwordService.passwordList;
 
   List searchItems = [];
 
   bool isObscure = true;
 
-  int get count => _password.length;
-
-  UnmodifiableListView<Password> get passwords =>
-      UnmodifiableListView(_password);
-
-
-  void addCategory(Categories categories) {
-    _passwordService.saveCategory(categories);
-  }
-
   void showPassword(Password password) {
-    final index = _password.indexOf(password);
-    final obscure = _password[index].obscure;
-
-    _password[index].obscure = !obscure;
+    final index = passwords.indexOf(password);
+    final obscure = passwords[index].obscure;
+    passwords[index].copyWith(obscure: !obscure);
     notifyListeners();
   }
-
-  
 
   Future<void> searchPassword(String name) async {
-       searchItems = _password.where((element) => element.name.toLowerCase().contains(name)).toList();
+    searchItems = passwords
+        .where((element) => element.name.toLowerCase().contains(name))
+        .toList();
 
     notifyListeners();
   }
 
-  Future<void> readPassword() async {
-    if (!searching) {
-      _password = await _passwordService.getAllPasswords();
-    }
-
-    notifyListeners();
-  }
-
-  void deletePassword(int id) {
+  void deletePassword(Password password) {
     setBusy(true);
-    _passwordService.deletePassword(id);
+    _passwordService.deletePassword(password);
     setBusy(false);
   }
 
@@ -84,6 +60,6 @@ class HomeViewModel extends ReactiveViewModel {
     _snackBarService.showSnackbar(message: "$password copied");
   }
 
-   @override
+  @override
   List<ListenableServiceMixin> get listenableServices => [_categoryService];
 }

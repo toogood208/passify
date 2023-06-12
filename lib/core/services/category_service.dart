@@ -1,53 +1,44 @@
-import 'package:isar/isar.dart';
 import 'package:passify/app/app.logger.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:passify/core/dao/category_dao.dart';
+import 'package:passify/core/database/app_database.dart';
 import 'package:stacked/stacked.dart';
 
 import '../models/category/category.dart';
-import '../models/password/password.dart';
 
 class CategoryService with ListenableServiceMixin {
-  final logger = getLogger("PasswordRService");
+  final logger = getLogger("CategoryService");
   CategoryService() {
     getAllCategories();
   }
 
-  List<Categories> _categoryList = [];
-  List<Categories> get categoryList => _categoryList;
+  static Future<CategoryDao> database() async {
+    final db = await $FloorAppDataBase.databaseBuilder("pass-save-db").build();
+    return db.categoryDao;
+  }
 
-  Future<void> addCategory(Categories categories) async {
-    final isar = await openDB();
-    _categoryList.insert(0, categories);
-    await isar.writeTxn(() async {
-      await isar.categories.putAll(_categoryList);
-    });
+  List<Category> _categoryList = [];
+  List<Category> get categoryList => _categoryList;
+
+  Future<void> addCategory(Category category) async {
+    final db = await CategoryService.database();
+    _categoryList.insert(0, category);
+    await db.insertCategory(category);
     notifyListeners();
+    logger.v(" added ${category.id} ${category.name} to db");
   }
 
   Future<void> getAllCategories() async {
+    final db = await CategoryService.database();
     logger.v("getting all categories");
-    final isar = await openDB();
-    _categoryList = await isar.categories.where().findAll();
+    _categoryList = await db.getAllCategories();
     notifyListeners();
   }
 
-   Future<void> deleteCategory(Categories categories) async{
-     final isar = await openDB();
-    _categoryList.remove(categories);
-     await isar.writeTxn(() async {
-      await isar.categories.delete(categories.id);
-    });
+  Future<void> deleteCategory(Category category) async {
+    final db = await CategoryService.database();
+    _categoryList.remove(category);
+    await db.deleteCategory(category);
     notifyListeners();
-  }
-
-
-  Future<Isar> openDB() async {
-    logger.v("initializing db");
-    final dir = await getApplicationDocumentsDirectory();
-    if (Isar.instanceNames.isEmpty) {
-      return await Isar.open([PasswordSchema, CategoriesSchema],
-          inspector: true, directory: dir.path);
-    }
-    return Future.value(Isar.getInstance());
+     logger.v(" deleted ${category.id} ${category.name} from db");
   }
 }

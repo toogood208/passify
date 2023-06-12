@@ -43,7 +43,6 @@ class CategoryView extends StatelessWidget {
                   decoration: const InputDecoration(
                       border: InputBorder.none, hintText: "Enter a category"),
                 ),
-
               ),
               body: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -52,48 +51,60 @@ class CategoryView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: 24.h,),
-                    Text("Categories", style:
-                      GoogleFonts.lato(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20.sp,
-                        color:const Color(0xFF373A4D)
-                      ),),
-                    SizedBox(height: 24.h,),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: model.categories.length,
-                          itemBuilder: (context,index){
-                          final category = model.categories[index];
-                          return Container(
-                            padding: EdgeInsets.all(12.r),
-                            margin: EdgeInsets.only(bottom: 16.h),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black12),
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(category.name,style:
-                                GoogleFonts.lato(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16.sp,
-                                    color:const Color(0xFF373A4D)
-                                ),),
-                                IconButton(onPressed: (){
-                                  model.deleteCategory(category);
-                                },
-                                    icon: Icon( CupertinoIcons.delete,
-                                    color: Colors.red,
-                                    size: 20.r,),)
-                              ],
-                            ),
-                          );
-
-                          }),
+                    SizedBox(
+                      height: 24.h,
                     ),
+                    Text(
+                      "Categories",
+                      style: GoogleFonts.lato(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20.sp,
+                          color: const Color(0xFF373A4D)),
+                    ),
+                    SizedBox(
+                      height: 24.h,
+                    ),
+                    model.categories.isEmpty
+                        ? const Text("No Categories")
+                        : Expanded(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: model.categories.length,
+                                itemBuilder: (context, index) {
+                                  final category = model.categories[index];
+                                  return Container(
+                                    padding: EdgeInsets.all(12.r),
+                                    margin: EdgeInsets.only(bottom: 16.h),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black12),
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          category.name!,
+                                          style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              color: const Color(0xFF373A4D)),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            model.deleteCategory(category);
+                                          },
+                                          icon: Icon(
+                                            CupertinoIcons.delete,
+                                            color: Colors.red,
+                                            size: 20.r,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          ),
                   ],
                 ),
               ),

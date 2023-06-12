@@ -52,7 +52,7 @@ class AddNewPassword extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Text("Categories"),
+                        const Text("Category"),
                         SizedBox(width: 10.w),
                         model.categories.isEmpty
                             ? IconButton(
@@ -66,14 +66,14 @@ class AddNewPassword extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  DropdownButton<Categories>(
+                                  DropdownButton<Category>(
                                       value: model.dropdownValue,
                                       icon: const Icon(Icons.arrow_drop_down),
                                       items: model.categories
-                                          .map<DropdownMenuItem<Categories>>(
-                                              (Categories e) {
-                                        return DropdownMenuItem<Categories>(
-                                            value: e, child: Text(e.name));
+                                          .map<DropdownMenuItem<Category>>(
+                                              (Category e) {
+                                        return DropdownMenuItem<Category>(
+                                            value: e, child: Text(e.name!));
                                       }).toList(),
                                       onChanged: model.changeCategory),
                                   IconButton(
@@ -222,20 +222,20 @@ class AddNewPassword extends StatelessWidget {
                           model.generatedPassword;
                           password != null
                               ? model.update(
-                                  id: password!.id,
+                                  id: password!.id!,
                                   name: password!.name,
                                   email: password!.email,
                                   pin: password!.pin,
                                   obscure: password!.obscure,
-                                  category: password!.category.value ??
-                                      model.dropdownValue)
-                              : model.addPassword(Password()
-                                ..pin = pinController.text
-                                ..name = nameController.text
-                                ..email = emailController.text
-                                ..createdTime = DateTime.now()
-                                ..obscure = true
-                                ..category.value = model.dropdownValue);
+                                  category: password?.category ??
+                                      model.dropdownValue?.name)
+                              : model.addPassword(Password(
+                                category: model.dropdownValue.toString(), 
+                                email:emailController.text, 
+                                 name: pinController.text, 
+                                 obscure: true, 
+                                 pin: pinController.text)
+                              );
                         }
                       },
                       child: Ink(

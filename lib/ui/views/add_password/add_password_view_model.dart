@@ -21,16 +21,17 @@ class AddPasswordViewModel extends ReactiveViewModel {
   late FocusNode emailFocus = FocusNode();
   late FocusNode pinFocus = FocusNode();
 
-  List<Categories> get categories => _categoryService.categoryList;
+ // List<Category> get categories => _categoryService.categoryList;
+ List<Category> categories = [];
 
   final logger = getLogger("AddPasswordViewModel");
-  Categories? dropdownValue;
+  Category? dropdownValue;
   bool checkBoxValue = false;
 
   String generatedPassword = "";
 
 
-  void changeCategory(Categories? newValue) {
+  void changeCategory(Category? newValue) {
     dropdownValue = null;
     dropdownValue = newValue;
     notifyListeners();
@@ -80,16 +81,16 @@ class AddPasswordViewModel extends ReactiveViewModel {
     required String email,
     required String pin,
     required bool obscure,
-    required Categories? category,
+    required String? category,
   }) async {
     final pass = await _passwordService.getOnePassword(id);
-    pass!
-      ..name = name
-      ..email = email
-      ..pin = pin
-      ..obscure = obscure
-      ..category.value = category
-      ..createdTime = DateTime.now();
+    pass!.copyWith(
+      name: name,
+      email: email,
+      pin: pin,
+      obscure: obscure,
+      category: category,
+    );
     addPassword(pass);
   }
 
@@ -97,9 +98,6 @@ class AddPasswordViewModel extends ReactiveViewModel {
     _navigationService.navigateTo(Routes.categoryView);
   }
 
-  void navigatoHomeView() {
-    _navigationService.clearStackAndShow(Routes.homePage);
-  }
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_categoryService];
