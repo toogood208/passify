@@ -23,6 +23,7 @@ class PasswordService with ListenableServiceMixin {
     final db = await PasswordService.database();
     await db.insertPassword(password);
     notifyListeners();
+   logger.v(" added ${password.id} ${password.name} ${password.email} ${password.pin}to db");
   }
 
   Future<void> getAllPasswords() async {
@@ -32,7 +33,7 @@ class PasswordService with ListenableServiceMixin {
     notifyListeners();
   }
 
-  Future<Password?> getOnePassword(int id) async {
+  Future<Password?> getOnePassword(String id) async {
      final db = await PasswordService.database();
     return await db.getPasswordById(id);
   }
@@ -42,5 +43,6 @@ class PasswordService with ListenableServiceMixin {
     _passwordList.remove(password);
      db.deletePassoword(password);
     notifyListeners();
+    logger.v(" deleted ${password.id} ${password.name} from db");
   }
 }

@@ -10,26 +10,25 @@ import 'package:passify/core/services/category_service.dart';
 import 'package:passify/core/services/password_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
+import 'package:uuid/uuid.dart';
 
 class AddPasswordViewModel extends ReactiveViewModel {
   final _passwordService = locator<PasswordService>();
   final _navigationService = locator<NavigationService>();
   final _categoryService = locator<CategoryService>();
-
+  var uuid = const Uuid();
 
   late FocusNode nameFocus = FocusNode();
   late FocusNode emailFocus = FocusNode();
   late FocusNode pinFocus = FocusNode();
 
- // List<Category> get categories => _categoryService.categoryList;
- List<Category> categories = [];
+  List<Category> get categories => _categoryService.categoryList;
 
   final logger = getLogger("AddPasswordViewModel");
   Category? dropdownValue;
   bool checkBoxValue = false;
 
   String generatedPassword = "";
-
 
   void changeCategory(Category? newValue) {
     dropdownValue = null;
@@ -76,7 +75,7 @@ class AddPasswordViewModel extends ReactiveViewModel {
   }
 
   void update({
-    required int id,
+    required String id,
     required String name,
     required String email,
     required String pin,
@@ -97,7 +96,6 @@ class AddPasswordViewModel extends ReactiveViewModel {
   void navigateToCategoryView() {
     _navigationService.navigateTo(Routes.categoryView);
   }
-
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_categoryService];

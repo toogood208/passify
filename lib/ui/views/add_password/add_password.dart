@@ -230,7 +230,8 @@ class AddNewPassword extends StatelessWidget {
                                   category: password?.category ??
                                       model.dropdownValue?.name)
                               : model.addPassword(Password(
-                                category: model.dropdownValue.toString(), 
+                                id: model.uuid.v4(),
+                                category: model.dropdownValue!.name!, 
                                 email:emailController.text, 
                                  name: pinController.text, 
                                  obscure: true, 

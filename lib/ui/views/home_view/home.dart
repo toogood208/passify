@@ -12,9 +12,6 @@ final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-
-
-
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = TextEditingController();
@@ -65,7 +62,8 @@ class HomePage extends StatelessWidget {
                           ),
                           child: Center(
                             child: TextField(
-                              onChanged: (name)=> model.searchPassword(controller.text),
+                              onChanged: (name) =>
+                                  model.searchPassword(controller.text),
                               controller: controller,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
@@ -128,44 +126,44 @@ class HomePage extends StatelessWidget {
                               color: const Color.fromRGBO(55, 58, 77, 1)),
                         ),
                         AnimatedList(
-                          key: _listKey,
+                            key: _listKey,
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             initialItemCount: model.passwords.length,
                             itemBuilder: (context, index, animation) {
-                              final password = model.passwords[index];
                               return SlideTransition(
-                                position: animation.drive(
-                                  Tween<Offset>(
-                                    begin: const Offset(1,0),
-                                    end: Offset.zero,
-                                  )
-                                ),
+                                position: animation.drive(Tween<Offset>(
+                                  begin: const Offset(1, 0),
+                                  end: Offset.zero,
+                                )),
                                 child: Slidable(
                                   endActionPane: ActionPane(
                                     motion: const StretchMotion(),
                                     children: [
                                       SlidableAction(
-                                          onPressed: (_)=>
-                                              removePasswordFromList(
-                                                  password, index: index,
-                                                  model: model),
-                                      icon: CupertinoIcons.delete,
-                                      backgroundColor: const Color.fromRGBO(76, 166, 168, 1),
-                                      label: "Delete",),
+                                        onPressed: (_) =>
+                                            removePasswordFromList(
+                                                model.passwords[index],
+                                                index: index,
+                                                model: model),
+                                        icon: CupertinoIcons.delete,
+                                        backgroundColor: const Color.fromRGBO(
+                                            76, 166, 168, 1),
+                                        label: "Delete",
+                                      ),
                                     ],
                                   ),
-
                                   child: SizeTransition(
                                     sizeFactor: animation,
                                     child: ListItemWidget(
-                                      password: password,
-                                      onUpdate: () => model.navigateToAddPassword(
-                                          password: password),
-                                      onCopyPin: () => model.copyData(password.pin),
-                                      onShowPassword: () =>
-                                          model.showPassword(password),
-
+                                      password: model.passwords[index],
+                                      onUpdate: () =>
+                                          model.navigateToAddPassword(
+                                              password: model.passwords[index]),
+                                      onCopyPin: () => model
+                                          .copyData(model.passwords[index].pin),
+                                      onShowPassword: () => model
+                                          .showPassword(model.passwords[index]),
                                     ),
                                   ),
                                 ),
@@ -191,30 +189,31 @@ class HomePage extends StatelessWidget {
           );
         });
   }
+
   void removePasswordFromList(
-      Password password, {
-        required int index,
-        required HomeViewModel model,
-      }) {
+    Password password, {
+    required int index,
+    required HomeViewModel model,
+  }) {
     _listKey.currentState?.removeItem(
       index,
-          (context, animation) => SizeTransition(
+      (context, animation) => SizeTransition(
         sizeFactor: animation,
-        child: ListItemWidget(password: password,
-          onUpdate: (){},
-          onShowPassword: (){},
-          onCopyPin: (){},),
+        child: ListItemWidget(
+          password: password,
+          onUpdate: () {},
+          onShowPassword: () {},
+          onCopyPin: () {},
+        ),
       ),
       duration: const Duration(milliseconds: 500),
     );
     model.deletePassword(password);
   }
-  void addPasswordToList() => _listKey.currentState?.insertItem(0);
+
+  void addPasswordToList() => _listKey.currentState
+      ?.insertItem(0, duration: const Duration(milliseconds: 500));
 }
-
-
-
-
 
 class ListItemWidget extends StatelessWidget {
   const ListItemWidget({
@@ -233,6 +232,7 @@ class ListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      key: ValueKey(password),
       onTap: onUpdate,
       child: Container(
         width: 327.w,

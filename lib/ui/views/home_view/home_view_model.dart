@@ -12,7 +12,7 @@ import 'package:stacked_services/stacked_services.dart';
 class HomeViewModel extends ReactiveViewModel {
   final _navigationService = locator<NavigationService>();
   final _snackBarService = locator<SnackbarService>();
-  final _passwordService = PasswordService();
+  final _passwordService = locator<PasswordService>();
   final _categoryService = locator<CategoryService>();
   final log = Logger();
   bool searching = false;
@@ -61,5 +61,5 @@ class HomeViewModel extends ReactiveViewModel {
   }
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_categoryService];
+  List<ListenableServiceMixin> get listenableServices => [_categoryService,_passwordService];
 }

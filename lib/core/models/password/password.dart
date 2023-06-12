@@ -1,16 +1,9 @@
 import 'package:floor/floor.dart';
-import 'package:flutter/foundation.dart';
 
-@Entity(tableName: 'password', foreignKeys: [
-  ForeignKey(
-    childColumns: ['category'],
-    parentColumns: ['id'],
-    entity: Category,
-  )
-])
+@Entity(tableName: 'password',)
 class Password {
-  @PrimaryKey(autoGenerate: true)
-  final int? id;
+  @PrimaryKey()
+  final String? id;
   final String name;
   final String email;
   final String pin;
@@ -26,7 +19,7 @@ class Password {
       required this.category,});
 
   Password copyWith({
-    int? id,
+    String? id,
     String? name,
     String? email,
     String? pin,

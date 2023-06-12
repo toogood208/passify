@@ -89,7 +89,7 @@ class _$AppDataBase extends AppDataBase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `pin` TEXT NOT NULL, `obscure` INTEGER NOT NULL, `category` TEXT NOT NULL, FOREIGN KEY (`category`) REFERENCES `Category` (`id`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `password` (`id` TEXT, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `pin` TEXT NOT NULL, `obscure` INTEGER NOT NULL, `category` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `category` (`id` TEXT, `name` TEXT, PRIMARY KEY (`id`))');
 
@@ -170,7 +170,7 @@ class _$PasswordDao extends PasswordDao {
   Future<List<Password>> getAllPasswords() async {
     return _queryAdapter.queryList('SELECT * FROM password',
         mapper: (Map<String, Object?> row) => Password(
-            id: row['id'] as int?,
+            id: row['id'] as String?,
             name: row['name'] as String,
             email: row['email'] as String,
             pin: row['pin'] as String,
@@ -182,7 +182,7 @@ class _$PasswordDao extends PasswordDao {
   Stream<List<Password>> watchAllPasswords() {
     return _queryAdapter.queryListStream('SELECT * FROM password',
         mapper: (Map<String, Object?> row) => Password(
-            id: row['id'] as int?,
+            id: row['id'] as String?,
             name: row['name'] as String,
             email: row['email'] as String,
             pin: row['pin'] as String,
@@ -193,10 +193,10 @@ class _$PasswordDao extends PasswordDao {
   }
 
   @override
-  Future<Password?> getPasswordById(int id) async {
+  Future<Password?> getPasswordById(String id) async {
     return _queryAdapter.query('SELECT * FROM password WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Password(
-            id: row['id'] as int?,
+            id: row['id'] as String?,
             name: row['name'] as String,
             email: row['email'] as String,
             pin: row['pin'] as String,
@@ -276,7 +276,7 @@ class _$CategoryDao extends CategoryDao {
   }
 
   @override
-  Future<Category?> getCategoryById(int id) async {
+  Future<Category?> getCategoryById(String id) async {
     return _queryAdapter.query('SELECT * FROM category WHERE id = ?1',
         mapper: (Map<String, Object?> row) =>
             Category(id: row['id'] as String?, name: row['name'] as String?),

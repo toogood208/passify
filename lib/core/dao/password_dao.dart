@@ -10,7 +10,7 @@ abstract class PasswordDao {
   Stream<List<Password>> watchAllPasswords();
 
   @Query("SELECT * FROM password WHERE id = :id")
-  Future<Password?> getPasswordById(int id);
+  Future<Password?> getPasswordById(String id);
 
   @insert
   Future<void> insertPassword(Password password);

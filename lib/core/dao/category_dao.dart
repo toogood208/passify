@@ -10,7 +10,7 @@ abstract class CategoryDao {
   Stream<List<Category>> watchAllCategories();
 
   @Query("SELECT * FROM category WHERE id = :id")
-  Future<Category?> getCategoryById(int id);
+  Future<Category?> getCategoryById(String id);
 
   @insert
   Future<void> insertCategory(Category category);
