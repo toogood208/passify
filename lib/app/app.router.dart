@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:passify/core/models/password/password.dart' as _i6;
 import 'package:passify/ui/views/add_password/add_password.dart' as _i4;
 import 'package:passify/ui/views/category/category.dart' as _i3;
-import 'package:passify/ui/views/home_view/home.dart' as _i2;
+import 'package:passify/ui/views/home_view/home_view.dart' as _i2;
 import 'package:stacked/stacked.dart' as _i1;
 import 'package:stacked_services/stacked_services.dart' as _i7;
 

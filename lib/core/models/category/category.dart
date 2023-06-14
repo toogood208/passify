@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 class Category {
   @PrimaryKey()
   final String? id;
-  final String? name;
+  String? name;
 
   Category({this.id, this.name});
 

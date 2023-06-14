@@ -17,26 +17,36 @@ class HomeViewModel extends ReactiveViewModel {
   final log = Logger();
   bool searching = false;
 
-  List<Category> get categories => _categoryService.categoryList;
   List<Password> get passwords => _passwordService.passwordList;
+  List<Category> get categories => _categoryService.categoryList;
 
-  List searchItems = [];
+  int selectedTypeIndex = 0;
+  int _selectedCategoryIndex = -1;
+
 
   bool isObscure = true;
 
-  void showPassword(Password password) {
-    final index = passwords.indexOf(password);
+  void showPassword(Password pass) {
+    final index = passwords.indexOf(pass);
     final obscure = passwords[index].obscure;
-    passwords[index].copyWith(obscure: !obscure);
+    passwords[index].obscure = !obscure;
+
     notifyListeners();
   }
 
-  Future<void> searchPassword(String name) async {
-    searchItems = passwords
-        .where((element) => element.name.toLowerCase().contains(name))
-        .toList();
+  List<Password> clickItems = [];
 
-    notifyListeners();
+  Future<void> clickChip(String name) async {
+    if (passwords.isNotEmpty) {
+      clickItems = _selectedCategoryIndex > 0
+          ? passwords
+              .where((element) => element.category == name)
+              .where(
+                (password) => password.name.toLowerCase().contains(name),
+              )
+              .toList()
+          : passwords;
+    }
   }
 
   void deletePassword(Password password) {
@@ -60,6 +70,21 @@ class HomeViewModel extends ReactiveViewModel {
     _snackBarService.showSnackbar(message: "$password copied");
   }
 
+  void selectChips(bool value, int index) {
+    if (value) {
+      _selectedCategoryIndex = index;
+      selectedTypeIndex = index;
+      final choice = categories[selectedTypeIndex].name;
+      _selectedCategoryIndex > 0
+          ? passwords.where((element) => element.category == choice)
+          : passwords;
+      notifyListeners();
+    }
+    log.v(passwords[selectedTypeIndex].category);
+    notifyListeners();
+  }
+
   @override
-  List<ListenableServiceMixin> get listenableServices => [_categoryService,_passwordService];
+  List<ListenableServiceMixin> get listenableServices =>
+      [_categoryService, _passwordService];
 }

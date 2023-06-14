@@ -20,10 +20,7 @@ class AddPasswordViewModel extends FormViewModel {
   final uuid = const Uuid();
   final passwordgenerator = RandomPasswordGenerator();
 
-  AddPasswordViewModel(this.password) {
-    logger.v(password!.name);
-  }
-
+  AddPasswordViewModel(this.password);
 
   final Password? password;
 
@@ -102,7 +99,7 @@ class AddPasswordViewModel extends FormViewModel {
                   email: emailValue!,
                   pin: pinValue!,
                   obscure: true,
-                  category: dropdownValue!.name ?? ""),
+                  category:dropdownValue != null? dropdownValue!.name !:""),
             );
     }
   }

@@ -21,12 +21,16 @@ class AddNewPassword extends StatelessWidget with $AddNewPassword {
   Widget build(BuildContext context) {
     return ViewModelBuilder<AddPasswordViewModel>.reactive(
         viewModelBuilder: () => AddPasswordViewModel(password),
+        onDispose:(model)=> disposeForm(),
         onViewModelReady: (model) {
           syncFormWithViewModel(model);
           if (password != null) {
             nameController.text = password!.name;
             emailController.text = password!.email;
             pinController.text = password!.pin;
+            if (model.dropdownValue != null) {
+              model.dropdownValue!.name = password!.category;
+            }
           }
         },
         builder: (context, model, child) {

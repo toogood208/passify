@@ -7,7 +7,7 @@ class Password {
   final String name;
   final String email;
   final String pin;
-  final bool obscure;
+  bool obscure;
   @ColumnInfo(name: 'category')
   final String category;
   Password(

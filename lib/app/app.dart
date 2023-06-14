@@ -2,7 +2,7 @@ import 'package:passify/core/services/category_service.dart';
 import 'package:passify/core/services/password_service.dart';
 import 'package:passify/ui/views/add_password/add_password.dart';
 import 'package:passify/ui/views/category/category.dart';
-import 'package:passify/ui/views/home_view/home.dart';
+import 'package:passify/ui/views/home_view/home_view.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
 @StackedApp(

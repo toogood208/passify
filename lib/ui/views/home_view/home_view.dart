@@ -5,6 +5,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:passify/core/models/password/password.dart';
 import 'package:passify/ui/views/home_view/home_view_model.dart';
+import 'package:passify/ui/views/password_search/password_search.dart';
+import 'package:passify/ui/widgets/list_item_widget.dart';
 import 'package:stacked/stacked.dart';
 
 final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -62,14 +64,15 @@ class HomePage extends StatelessWidget {
                           ),
                           child: Center(
                             child: TextField(
-                              onChanged: (name) =>
-                                  model.searchPassword(controller.text),
                               controller: controller,
                               decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  suffixIcon: const Icon(
-                                    Icons.search,
-                                    color: Colors.black,
+                                  suffixIcon: IconButton(
+                                    onPressed: () => showSearch(
+                                      context: context,
+                                      delegate: PasswordSearch(),
+                                    ),
+                                    icon: const Icon(Icons.search),
                                   ),
                                   hintText: "Search your passwords",
                                   hintStyle: GoogleFonts.poppins(
@@ -79,51 +82,6 @@ class HomePage extends StatelessWidget {
                                           199, 199, 199, 1))),
                             ),
                           ),
-                        ),
-                        model.categories.isNotEmpty
-                            ? Container(
-                                margin: EdgeInsets.only(top: 24.h),
-                                height: 48.h,
-                                child: ListView.builder(
-                                    itemCount: model.categories.length,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      final category =
-                                          model.categories[index].name;
-                                      return Container(
-                                        margin: EdgeInsets.only(
-                                          right: 26.w,
-                                        ),
-                                        width: 98.w,
-                                        height: 48.h,
-                                        decoration: BoxDecoration(
-                                            color: const Color.fromRGBO(
-                                                76, 166, 168, 1),
-                                            borderRadius:
-                                                BorderRadius.circular(8.r)),
-                                        child: Center(
-                                          child: Text(
-                                            category!,
-                                            style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 14.sp,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              )
-                            : const SizedBox.shrink(),
-                        SizedBox(
-                          height: 24.h,
-                        ),
-                        Text(
-                          "Passwords",
-                          style: GoogleFonts.lato(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 24.sp,
-                              color: const Color.fromRGBO(55, 58, 77, 1)),
                         ),
                         AnimatedList(
                             key: _listKey,
@@ -215,103 +173,6 @@ class HomePage extends StatelessWidget {
       ?.insertItem(0, duration: const Duration(milliseconds: 500));
 }
 
-class ListItemWidget extends StatelessWidget {
-  const ListItemWidget({
-    super.key,
-    required this.password,
-    required this.onUpdate,
-    required this.onCopyPin,
-    required this.onShowPassword,
-  });
 
-  final Password password;
-  final VoidCallback onUpdate;
-  final VoidCallback onCopyPin;
-  final VoidCallback onShowPassword;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      key: ValueKey(password),
-      onTap: onUpdate,
-      child: Container(
-        width: 327.w,
-        height: 87.h,
-        padding: EdgeInsets.symmetric(
-          horizontal: 12.w,
-          vertical: 10.h,
-        ),
-        margin: EdgeInsets.symmetric(vertical: 16.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.1),
-              spreadRadius: 4.0,
-              blurRadius: 15.0,
-              offset: Offset(0.0, 0.0),
-            )
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  password.name,
-                  style: GoogleFonts.lato(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20.sp,
-                    color: const Color.fromRGBO(55, 58, 77, 1),
-                  ),
-                ),
-                GestureDetector(
-                    onTap: onCopyPin,
-                    child: Icon(
-                      Icons.copy,
-                      size: 19.r,
-                    )),
-              ],
-            ),
-            Text(
-              password.email,
-              style: GoogleFonts.lato(
-                fontWeight: FontWeight.w500,
-                fontSize: 12.sp,
-                color: const Color.fromRGBO(116, 116, 116, 1),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  !password.obscure ? password.pin : "****************",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.sp,
-                    color: const Color.fromRGBO(55, 58, 77, 1),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                        onTap: onShowPassword,
-                        child: Icon(
-                          Icons.visibility,
-                          size: 19.r,
-                        )),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+
