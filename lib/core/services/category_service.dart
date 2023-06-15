@@ -16,7 +16,7 @@ class CategoryService with ListenableServiceMixin {
     return db.categoryDao;
   }
 
-  List<Category> _categoryList = [];
+  final List<Category> _categoryList = [];
   List<Category> get categoryList => _categoryList;
 
   Future<void> addCategory(Category category) async {
@@ -30,7 +30,12 @@ class CategoryService with ListenableServiceMixin {
   Future<void> getAllCategories() async {
     final db = await CategoryService.database();
     logger.v("getting all categories");
-    _categoryList = await db.getAllCategories();
+    final firstCategory = Category(id: "1", name: "All");
+    final otherCategories = await db.getAllCategories();
+    _categoryList.add(firstCategory);
+    for (Category element in otherCategories) {
+        _categoryList.add(element);
+      }
     notifyListeners();
   }
 
@@ -39,6 +44,6 @@ class CategoryService with ListenableServiceMixin {
     _categoryList.remove(category);
     await db.deleteCategory(category);
     notifyListeners();
-     logger.v(" deleted ${category.id} ${category.name} from db");
+    logger.v(" deleted ${category.id} ${category.name} from db");
   }
 }

@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
               primarySwatch: Colors.blue,
             ),
-            initialRoute: Routes.homePage,
             onGenerateRoute: StackedRouter().onGenerateRoute,
             navigatorKey: StackedService.navigatorKey,
           );

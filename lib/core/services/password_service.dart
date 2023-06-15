@@ -12,7 +12,7 @@ class PasswordService with ListenableServiceMixin {
 
   final logger = getLogger("PasswordService");
   PasswordService() {
-    getAllPasswords();
+   getAllPasswords();
   }
 
   List<Password> _passwordList = [];
@@ -23,7 +23,17 @@ class PasswordService with ListenableServiceMixin {
     final db = await PasswordService.database();
     await db.insertPassword(password);
     notifyListeners();
-   logger.v(" added ${password.id} ${password.name} ${password.email} ${password.pin}to db");
+    logger.v(
+        " added ${password.id} ${password.name} ${password.email} ${password.pin}to db");
+  }
+
+  Future<void> updatePassword(Password password) async {
+  //  _passwordList.insert(0, password);
+    final db = await PasswordService.database();
+    await db.updatePassword(password);
+    notifyListeners();
+    logger.v(
+        " updating ${password.id} ${password.name} ${password.email} ${password.pin}to db");
   }
 
   Future<void> getAllPasswords() async {
@@ -34,14 +44,22 @@ class PasswordService with ListenableServiceMixin {
   }
 
   Future<Password?> getOnePassword(String id) async {
-     final db = await PasswordService.database();
+    final db = await PasswordService.database();
     return await db.getPasswordById(id);
   }
 
+  Future<void> getPasswordsByCategory(String category) async {
+    final db = await PasswordService.database();
+    final passwords = await db.getPasswordByCategory(category);
+    logger.v(passwords);
+    _passwordList = passwords;
+    notifyListeners();
+  }
+
   Future<void> deletePassword(Password password) async {
-     final db = await PasswordService.database();
+    final db = await PasswordService.database();
     _passwordList.remove(password);
-     db.deletePassoword(password);
+    db.deletePassoword(password);
     notifyListeners();
     logger.v(" deleted ${password.id} ${password.name} from db");
   }

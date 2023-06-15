@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:passify/ui/views/password_search/password_search_viewmodel.dart';
 import 'package:passify/ui/widgets/app_spinner.dart';
 import 'package:passify/ui/widgets/list_item_widget.dart';
@@ -69,16 +70,15 @@ class PasswordSearch extends SearchDelegate {
           return suggestions1.isEmpty
               ? const Center(child: Text('No results found'))
               : Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(20.0.r),
                   child: ListView.separated(
                     itemCount: suggestions.length,
                     separatorBuilder: (context, index) =>
-                        const SizedBox(height: 40.0),
+                        SizedBox(height: 1.0.h),
                     itemBuilder: (context, index) {
                       final password = suggestions[index];
                       return ListItemWidget(
                         password: password,
-                        onUpdate: () => model.goToAddPasswordView(password),
                         onCopyPin: () => model.copyData(password.pin),
                         onShowPassword: () => model.showPassword(password),
                       );
@@ -102,7 +102,6 @@ class PasswordListNotEmpty extends ViewModelWidget<PasswordSearchViewModel> {
           final password = viewModel.passwordList[index];
           return ListItemWidget(
             password: password,
-            onUpdate: () => viewModel.goToAddPasswordView(password),
             onCopyPin: () => viewModel.copyData(password.pin),
             onShowPassword: () => viewModel.showPassword(password),
           );

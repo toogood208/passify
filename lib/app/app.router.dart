@@ -5,14 +5,15 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter/material.dart' as _i5;
+import 'package:flutter/material.dart' as _i6;
 import 'package:flutter/material.dart';
-import 'package:passify/core/models/password/password.dart' as _i6;
+import 'package:passify/core/models/password/password.dart' as _i7;
 import 'package:passify/ui/views/add_password/add_password.dart' as _i4;
 import 'package:passify/ui/views/category/category.dart' as _i3;
 import 'package:passify/ui/views/home_view/home_view.dart' as _i2;
+import 'package:passify/ui/views/start_up/start_up_view.dart' as _i5;
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i7;
+import 'package:stacked_services/stacked_services.dart' as _i8;
 
 class Routes {
   static const homePage = '/home-page';
@@ -21,10 +22,13 @@ class Routes {
 
   static const addNewPassword = '/add-new-password';
 
+  static const startUpView = '/';
+
   static const all = <String>{
     homePage,
     categoryView,
     addNewPassword,
+    startUpView,
   };
 }
 
@@ -41,6 +45,10 @@ class StackedRouter extends _i1.RouterBase {
     _i1.RouteDef(
       Routes.addNewPassword,
       page: _i4.AddNewPassword,
+    ),
+    _i1.RouteDef(
+      Routes.startUpView,
+      page: _i5.StartUpView,
     ),
   ];
 
@@ -70,6 +78,12 @@ class StackedRouter extends _i1.RouterBase {
         settings: data,
       );
     },
+    _i5.StartUpView: (data) {
+      return _i1.buildAdaptivePageRoute<dynamic>(
+        builder: (context) => const _i5.StartUpView(),
+        settings: data,
+      );
+    },
   };
 
   @override
@@ -81,7 +95,7 @@ class StackedRouter extends _i1.RouterBase {
 class CategoryViewArguments {
   const CategoryViewArguments({this.key});
 
-  final _i5.Key? key;
+  final _i6.Key? key;
 
   @override
   String toString() {
@@ -106,9 +120,9 @@ class AddNewPasswordArguments {
     this.password,
   });
 
-  final _i5.Key? key;
+  final _i6.Key? key;
 
-  final _i6.Password? password;
+  final _i7.Password? password;
 
   @override
   String toString() {
@@ -127,7 +141,7 @@ class AddNewPasswordArguments {
   }
 }
 
-extension NavigatorStateExtension on _i7.NavigationService {
+extension NavigatorStateExtension on _i8.NavigationService {
   Future<dynamic> navigateToHomePage([
     int? routerId,
     bool preventDuplicates = true,
@@ -143,7 +157,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> navigateToCategoryView({
-    _i5.Key? key,
+    _i6.Key? key,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -159,8 +173,8 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> navigateToAddNewPassword({
-    _i5.Key? key,
-    _i6.Password? password,
+    _i6.Key? key,
+    _i7.Password? password,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -169,6 +183,20 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }) async {
     return navigateTo<dynamic>(Routes.addNewPassword,
         arguments: AddNewPasswordArguments(key: key, password: password),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToStartUpView([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return navigateTo<dynamic>(Routes.startUpView,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -190,7 +218,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> replaceWithCategoryView({
-    _i5.Key? key,
+    _i6.Key? key,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -206,8 +234,8 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> replaceWithAddNewPassword({
-    _i5.Key? key,
-    _i6.Password? password,
+    _i6.Key? key,
+    _i7.Password? password,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -216,6 +244,20 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }) async {
     return replaceWith<dynamic>(Routes.addNewPassword,
         arguments: AddNewPasswordArguments(key: key, password: password),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithStartUpView([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return replaceWith<dynamic>(Routes.startUpView,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

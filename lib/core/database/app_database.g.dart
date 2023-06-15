@@ -206,6 +206,19 @@ class _$PasswordDao extends PasswordDao {
   }
 
   @override
+  Future<List<Password>> getPasswordByCategory(String category) async {
+    return _queryAdapter.queryList('SELECT * FROM password WHERE category = ?1',
+        mapper: (Map<String, Object?> row) => Password(
+            id: row['id'] as String?,
+            name: row['name'] as String,
+            email: row['email'] as String,
+            pin: row['pin'] as String,
+            obscure: (row['obscure'] as int) != 0,
+            category: row['category'] as String),
+        arguments: [category]);
+  }
+
+  @override
   Future<void> insertPassword(Password password) async {
     await _passwordInsertionAdapter.insert(password, OnConflictStrategy.abort);
   }

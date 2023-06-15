@@ -23,7 +23,6 @@ class HomeViewModel extends ReactiveViewModel {
   int selectedTypeIndex = 0;
   int _selectedCategoryIndex = -1;
 
-
   bool isObscure = true;
 
   void showPassword(Password pass) {
@@ -70,17 +69,18 @@ class HomeViewModel extends ReactiveViewModel {
     _snackBarService.showSnackbar(message: "$password copied");
   }
 
-  void selectChips(bool value, int index) {
-    if (value) {
-      _selectedCategoryIndex = index;
-      selectedTypeIndex = index;
-      final choice = categories[selectedTypeIndex].name;
-      _selectedCategoryIndex > 0
-          ? passwords.where((element) => element.category == choice)
-          : passwords;
-      notifyListeners();
+  void selectChips(int index) {
+    _selectedCategoryIndex = index;
+    selectedTypeIndex = index;
+    final choice = categories[selectedTypeIndex].name;
+    if (choice == "All") {
+      _passwordService.getAllPasswords();
+    }else{
+       _passwordService.getPasswordsByCategory(choice!);
+
     }
-    log.v(passwords[selectedTypeIndex].category);
+   
+
     notifyListeners();
   }
 

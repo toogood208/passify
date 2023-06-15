@@ -78,12 +78,18 @@ class AddPasswordViewModel extends FormViewModel {
     _navigationService.back(result: true);
   }
 
+  Future updatePassword(Password password) async {
+    await _passwordService.updatePassword(password);
+      notifyListeners();
+    _navigationService.back(result: true);
+  }
+
   void addNewPassword() async {
     if (!hasNameValidationMessage &&
         !hasEmailValidationMessage &&
         !hasPinValidationMessage) {
       password != null
-          ? await addPassword(
+          ? await updatePassword(
               Password(
                   id: password?.id,
                   name: password!.name,
@@ -99,7 +105,7 @@ class AddPasswordViewModel extends FormViewModel {
                   email: emailValue!,
                   pin: pinValue!,
                   obscure: true,
-                  category:dropdownValue != null? dropdownValue!.name !:""),
+                  category: dropdownValue != null ? dropdownValue!.name! : ""),
             );
     }
   }
